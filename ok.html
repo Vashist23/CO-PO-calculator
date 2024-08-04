@@ -1,0 +1,180 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>CO-PO, PSO Mapping</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+<h2>CO-PO, PSO Mapping</h2>
+
+<table>
+  <tr>
+    <!-- <th>CO-PO, PSO Mapping</th>
+    <th>CO1</th>
+    <th>CO2</th>
+    <th>CO3</th>
+    <th>CO4</th> -->
+    <th colspan="18">CO- PO, PSO Mapping  <br>
+      (3/2/1 indicates strength of correlation) <br> 3-Strong, 2-Medium, 1- Weak 
+      </th>
+  </tr>
+  <tr>
+    <td colspan="1">co's</td>
+    <td>
+      programme
+      <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    </td>
+    
+  </tr>
+  <tr>
+    <td colspan="1">PO2</td>
+    <!-- <td>2</td>
+    <td>3</td>
+    <td>2</td>
+    <td>1</td> -->
+  </tr>
+  <tr>
+    <td colspan="1">PO3</td>
+    <!-- <td>1</td>
+    <td>1</td>
+    <td>3</td>
+    <td>2</td> -->
+  </tr>
+  <tr>
+    <td colspan="1">PO4</td>
+    <!-- <td>3</td>
+    <td>2</td>
+    <td>1</td>
+    <td>3</td> -->
+  </tr>
+</table>
+
+</body>
+</html>
+<!-- <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSV/Excel to SQL</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+
+    <script>
+      function handleFormSubmit() {
+        var form = document.getElementById("uploadForm");
+        var formData = new FormData(form);
+        fetch("http://localhost:3000/upload", {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            alert("File uploaded successfully!");
+            showDownloadButton();
+          })
+          .catch((error) => {
+            console.error("Error uploading file:", error);
+            alert("Error uploading file. Please try again.");
+          });
+
+        return false;
+      }
+
+      function showDownloadButton() {
+        var downloadButton = document.getElementById("downloadButton");
+        downloadButton.style.display = "block";
+      }
+
+      async function fetchAndProcessData() {
+        try {
+          const response = await fetch("http://localhost:3000/details");
+          const data = await response.json();
+
+          const sheetData = []; // Initialize an empty array for the sheet data
+
+          const files = data[data.length - 1].files;
+          files.forEach((file) => {
+            console.log(`Processing file: ${file.fileName}`);
+            file.data.forEach((row) => {
+              const rowData = [];
+
+              // Add logic to copy specific cells or ranges from the input file
+              // For example, copy the College Name from the input file to the output file
+              if (row.CollegeName !== undefined) {
+                rowData.push({ v: row.CollegeName, s: { font: { bold: true } } });
+              }
+
+              // Add other cells or ranges you want to copy
+              // rowData.push({ v: row.OtherHeading, s: { font: { bold: true } } });
+
+              // Push the row data to the sheetData array
+              sheetData.push(rowData);
+            });
+          });
+
+          // Create a worksheet with the collected data
+          const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
+
+          // Create a workbook and add the worksheet
+          const workbook = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+          // Save the workbook to a file
+          XLSX.writeFile(workbook, "output.xlsx");
+
+          alert("File downloaded successfully!");
+        } catch (error) {
+          console.error("Error fetching or processing data:", error);
+          alert("Error fetching or processing data. Please try again.");
+        }
+      }
+    </script>
+  </head>
+
+  <body class="bg-gray-200  border-solid border-2 border-black m-10 rounded">
+    <div class="container mx-auto p-8">
+      <h1 class="text-4xl mb-8 text-center font-bold text-black">CO calculation</h1>
+      <form id="uploadForm" onsubmit="return handleFormSubmit()" enctype="multipart/form-data">
+        <div class="mb-6">
+          <label for="fileInput" class="block text-sm font-semibold text-gray-700 mb-2">Choose Excel File:</label>
+          <input type="file" id="fileInput" name="file" class="border rounded p-3">
+        </div>
+
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-full transition duration-300">Upload</button>
+      </form>
+
+      <button id="downloadButton" onclick="fetchAndProcessData()" class="bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-full mt-4 transition duration-300" style="display: none;">Download Excel File</button>
+    </div>
+  </body>
+</html> -->

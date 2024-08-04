@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CSV/Excel to SQL</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    input {
+      background-color: #f2f2f2;
+    }
+  </style>
+
+  <script>
+    var mappingData = {};
+    function handleFormSubmit() {
+      var form = document.getElementById("uploadForm");
+      var formData = new FormData(form);
+      fetch("http://localhost:3000/upload", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          alert("File uploaded successfully!")
+          showDownloadButton();
+        })
+        .catch((error) => {
+          console.error("Error uploading file:", error);
+          alert("Error uploading file. Please try again.");
+        });
+
+      return false;
+    }
+
+    function showDownloadButton() {
+      var downloadButton = document.getElementById("downloadButton");
+      downloadButton.style.display = "block";
+    }
+    async function fetchAndProcessData() {
+      try {
+        const response = await fetch("http://localhost:3000/details");
+        const data = await response.json();
+
+        const sheetData = [
+          [
+            {
+
+              v: "                                                                                                                    MALLA REDDY ENGINEERING COLLEGE (AUTONOMOUS)",
+              s: {
+                font: { bold: true },
+                alignment: { horizontal: "center", vertical: "middle" },
+              }
+            },
+          ],
+          [
+            {
+
+              v: "                                                                                                          Maisammaguda, Dhulappally (via), Kompally (PO), Secunderabad -500100",
+              s: {
+                font: { bold: true },
+                alignment: { horizontal: "center", vertical: "middle" },
+              }
+            },
+          ],
+          [
+            {
+
+              v: "                                                                                                                Department of Computer science & engineering (Data science)",
+              s: {
+                font: { bold: true },
+                alignment: { horizontal: "center", vertical: "middle" },
+              }
+            },
+          ],
+          [
+            {
+
+              v: "                                                                                                                                    MR21 Regulations",
+              s: {
+                font: { bold: true },
+                alignment: { horizontal: "center", vertical: "middle" },
+              }
+            },
+          ],
+          [
+            {
+              v: ''
+            },
+            {
+              v: ''
+            },
+            {
+              v: "               Continuous Internal Evaluation (CIE)",
+              s: {
+                font: { bold: true },
+                alignment: { horizontal: "center", vertical: "middle" },
+              }
+            },
+            {
+              v: ''
+            }, {
+              v: ''
+            }, {
+              v: ''
+            }, {
+              v: ''
+            },
+
+            {
+              v: "CO1",
+
+            },
+            {
+              v: "CO2",
+
+            },
+            {
+              v: "CO3",
+
+            },
+            {
+              v: "CO4",
+
+            },
+            {
+              v: "CO5",
+
+            }, {
+              v: "               Semester End Examination (SEE)",
+              s: {
+                font: { bold: true },
+                alignment: { horizontal: "center", vertical: "middle" },
+              }
+            },
+            {
+              v: "               MID-1 and MID-2",
+              s: {
+                font: { bold: true },
+                alignment: { horizontal: "center", vertical: "middle" },
+              }
+            }
+          ],
+          [
+            "S.No ",
+            "Roll No",
+
+            "m1",
+            "m2",
+            "m3",
+            "m4",
+            "m5",
+
+            "m1_co",
+            "m2_co",
+            "m3_co",
+            "m4_co",
+            "m5_co",
+            "s1",
+            "s2",
+            "s3",
+            "s4",
+            "s5",
+            "mid1_Total",
+            "mid2_Total",
+            "mid1_Scale",
+            "mid2_Scale",
+          ],
+         
+        ];
+        const files = data[data.length - 1].files;
+        let total_m1_co = 0;
+        let total_m2_co = 0;
+        let total_m3_co = 0;
+        let total_m4_co = 0;
+        let total_m5_co = 0;
+        let totalStudents = 0;
+        files.forEach((file) => {
+          console.log(`Processing file: ${file.fileName}`);
+          file.data.forEach((student) => {
+            const m1_1 = student.m1s1or2;
+            const m1_2 = student.m1s3or4;
+            const m1_3 = student.m1s5or6;
+            const m1_4 = student.m1s7or8;
+            const m1_5 = student.m1s9or10;
+            const m2_1 = student.m2s1or2;
+            const m2_2 = student.m2s3or4;
+            const m2_3 = student.m2s5or6;
+            const m2_4 = student.m2s7or8;
+            const m2_5 = student.m2s9or10;
+            const m1_ob = student.m1_1obj;
+            const m2_ob = student.m1_2obj;
+            const m3_ob = student.m1_3obj;
+            const m32_ob = student.m2_1obj;
+            const m4_ob = student.m2_2obj;
+            const m5_ob = student.m2_3obj; 
+            const m1_ppt_marks=student.m1_ppt;
+            const m2_ppt_marks=student.m2_ppt;
+            const m1asm_co1=student.m1_asm_co_1;
+            const m1asm_co2=student.m1_asm_co_2;
+            const m1asm_co3=student.m1_asm_co_3;
+            const m2asm_co1=student.m2_asm_co_1;
+            const m2asm_co2=student.m2_asm_co_2;
+            const m2asm_co3=student.m2_asm_co_3;
+            const m1_assm = m1asm_co1+m1asm_co2+m1asm_co3;
+            const m2_assm = m2asm_co1+m2asm_co2+m2asm_co3;
+            const mod1_sub = m1_1 + m1_2;
+            const mod2_sub = m1_3 + m1_4;
+            const mod3_sub = m1_5 + m2_1;
+            const mod4_sub = m2_2 + m2_3;
+            const mod5_sub = m2_4 + m2_5;
+            const mod1_obj = m1_ob;
+            const mod2_obj = m2_ob;
+            const mod3_obj = m3_ob + m32_ob;
+            const mod4_obj = m4_ob;
+            const mod5_obj = m5_ob;
+            const mod1_ppt=0.4*m1_ppt_marks;
+            const mod2_ppt=0.4*m1_ppt_marks;
+            const mod31_ppt=0.2*m1_ppt_marks;
+            const mod32_ppt=0.4*m2_ppt_marks;
+            const mod4_ppt=0.4*m2_ppt_marks;
+            const mod5_ppt=0.2*m2_ppt_marks;
+            const mod1_asm = m1asm_co1 ;
+            const mod2_asm =m1asm_co2;
+            const mod3_asm = m1asm_co3 + m2asm_co1;
+            const mod4_asm = m2asm_co2;
+            const mod5_asm = m2asm_co3;
+            const mid1_total=m1_1+m1_2+m1_3+m1_4+m1_5+m1_ob+m2_ob+m3_ob+m1_assm+m1_ppt_marks;
+            const mid2_total=m2_1+m2_2+m2_3+m2_4+m2_5+m32_ob+m4_ob+m5_ob+m2_assm+m2_ppt_marks;
+            const m1 = mod1_sub + mod1_obj + mod1_asm +mod1_ppt;   
+            const m2 = mod2_sub + mod2_obj + mod2_asm+mod2_ppt;
+            const m3 = mod3_sub + mod3_obj + mod3_asm+mod31_ppt+mod32_ppt;
+            const m4 = mod4_sub + mod4_obj + mod4_asm +mod4_ppt;
+            const m5 = mod5_sub + mod5_obj + mod5_asm+ mod5_ppt;
+            const mid1_scale =
+              ((mod1_sub +
+                mod2_sub +
+                m1_5 +
+                mod1_obj +
+                m1_ppt_marks+
+                mod2_obj +
+                m3_ob +
+                m1_assm) /
+                40) *
+              30;
+            const mid2_scale =
+              ((m32_ob +
+                m2_1 +
+                mod4_sub +
+                mod4_obj +
+                mod5_sub +
+                m2_ppt_marks+
+                mod5_obj +
+                m2_assm) /
+                40) *
+              30;
+            const m11 = (0.4 * mid1_scale) / 2;
+            const m22 = (0.4 * mid1_scale) / 2;
+            const m33 = (0.2 * mid1_scale + 0.2 * mid2_scale) / 2;
+            const m44 = (0.4 * mid2_scale) / 2;
+            const m55 = (0.4 * mid2_scale) / 2;
+            const per1 = (m11 / (m11 + m22 + m33 + m44 + m55)) * 100;
+            const per2 = (m22 / (m11 + m22 + m33 + m44 + m55)) * 100;
+            const per3 = (m33 / (m11 + m22 + m33 + m44 + m55)) * 100;
+            const per4 = (m44 / (m11 + m22 + m33 + m44 + m55)) * 100;
+            const per5 = (m55 / (m11 + m22 + m33 + m44 + m55)) * 100;
+            const sem = student.sem;
+            const s11 = sem * (per1 / 100);
+            const s22 = sem * (per2 / 100);
+            const s33 = sem * (per3 / 100);
+            const s44 = sem * (per4 / 100);
+            const s55 = sem * (per5 / 100);
+            const s1 = Math.floor(s11);
+            const s2 = Math.floor(s22);
+            const s3 = Math.floor(s33);
+            const s4 = Math.floor(s44);
+            const s5 = Math.floor(s55);
+            const m1_f = m1 + s1;
+            const m2_f = m2 + s2;
+            const m3_f = m3 + s3;
+            const m4_f = m4 + s4;
+            const m5_f = m5 + s5;
+            console.log(m1_f,m2_f,m3_f,m4_f,m5_f);
+            const m1_per = (m1_f / 34) * 100;
+            const m2_per = (m2_f / 34) * 100;
+            const m3_per = (m3_f / 34) * 100;
+            const m4_per = (m4_f / 34) * 100;
+            const m5_per = (m5_f / 34) * 100;
+            const m1_co =
+              m1_per > 60 ? 3 : m1_per >= 50 && m1_per <= 60 ? 2 : 1;
+            const m2_co =
+              m2_per > 60 ? 3 : m2_per >= 50 && m2_per <= 60 ? 2 : 1;
+            const m3_co =
+              m3_per > 60 ? 3 : m3_per >= 50 && m3_per <= 60 ? 2 : 1;
+            const m4_co =
+              m4_per > 60 ? 3 : m4_per >= 50 && m4_per <= 60 ? 2 : 1;
+            const m5_co =
+              m5_per > 60 ? 3 : m5_per >= 50 && m5_per <= 60 ? 2 : 1;
+            total_m1_co += m1_co;
+            total_m2_co += m2_co;
+            total_m3_co += m3_co;
+            total_m4_co += m4_co;
+            total_m5_co += m5_co;
+            totalStudents++;
+            const studentname = student.Studentname;
+            const roll = student.Rollno;
+            const studentData = [
+            totalStudents,
+              roll,
+              m1,
+              m2,
+              m3,
+              m4,
+              m5,
+
+              m1_co,
+              m2_co,
+              m3_co,
+              m4_co,
+              m5_co,
+              s1,
+              s2,
+              s3,
+              s4,
+              s5,
+              mid1_total,
+              mid2_total,
+              mid1_scale,
+              mid2_scale
+            ];
+            sheetData.push(studentData);
+          });
+        });
+        const totalRow = [
+          "",
+          "Totals",
+          "",
+          "",
+          "",
+          "co1",
+          "co2",
+          "co3",
+          "co4",
+          "co5",
+        ];
+        sheetData.push(totalRow);
+
+        const co1 = total_m1_co / totalStudents;
+        const co2 = total_m2_co / totalStudents;
+        const co3 = total_m3_co / totalStudents;
+        const co4 = total_m4_co / totalStudents;
+        const co5 = total_m5_co / totalStudents;
+
+        const totalRoww = [
+          "",
+          "Totals",
+          "",
+          "",
+          "",
+          co1,
+          co2,
+          co3,
+          co4,
+          co5,
+        ];
+        sheetData.push(totalRoww);
+
+        const r = [
+          "", ""
+        ];
+        sheetData.push(r);
+
+
+        var mappingData = saveMappingData();
+        const totalRowww = [
+          "",
+          "Totals",
+          "",
+          "",
+          "",
+          'po1',
+          'po2',
+          'po3',
+          'po4',
+          'po5',
+          'po6',
+          'po7',
+          'po8',
+          'po9',
+          'po10',
+          'po11',
+          'po12'
+        ]
+
+        sheetData.push(totalRowww);
+
+        const po1 = ((co1 * mappingData['co1-po1']) + (co2 * mappingData['co2-po1']) + (co3 * mappingData['co3-po1']) + (co4 * mappingData['co4-po1']) + (co5 * mappingData['co5-po1'])) / ((mappingData['co1-po1']) + (mappingData['co2-po1']) + (mappingData['co3-po1']) + (mappingData['co4-po1']) + (mappingData['co5-po1']));
+        const po2 = ((co1 * mappingData['co1-po2']) + (co2 * mappingData['co2-po2']) + (co3 * mappingData['co3-po2']) + (co4 * mappingData['co4-po2']) + (co5 * mappingData['co5-po2'])) / ((mappingData['co1-po2']) + (mappingData['co2-po2']) + (mappingData['co3-po2']) + (mappingData['co4-po2']) + (mappingData['co5-po2']));
+        const po3 = ((co1 * mappingData['co1-po3']) + (co2 * mappingData['co2-po3']) + (co3 * mappingData['co3-po3']) + (co4 * mappingData['co4-po3']) + (co5 * mappingData['co5-po3'])) / ((mappingData['co1-po3']) + (mappingData['co2-po3']) + (mappingData['co3-po3']) + (mappingData['co4-po3']) + (mappingData['co5-po3']));
+        const po4 = ((co1 * mappingData['co1-po4']) + (co2 * mappingData['co2-po4']) + (co3 * mappingData['co3-po4']) + (co4 * mappingData['co4-po4']) + (co5 * mappingData['co5-po4'])) / ((mappingData['co1-po4']) + (mappingData['co2-po4']) + (mappingData['co3-po4']) + (mappingData['co4-po4']) + (mappingData['co5-po4']));
+        const po5 = ((co1 * mappingData['co1-po5']) + (co2 * mappingData['co2-po5']) + (co3 * mappingData['co3-po5']) + (co4 * mappingData['co4-po5']) + (co5 * mappingData['co5-po5'])) / ((mappingData['co1-po5']) + (mappingData['co2-po5']) + (mappingData['co3-po5']) + (mappingData['co4-po5']) + (mappingData['co5-po5']));
+        const po6 = ((co1 * mappingData['co1-po6']) + (co2 * mappingData['co2-po6']) + (co3 * mappingData['co3-po6']) + (co4 * mappingData['co4-po6']) + (co5 * mappingData['co5-po6'])) / ((mappingData['co1-po6']) + (mappingData['co2-po6']) + (mappingData['co3-po6']) + (mappingData['co4-po6']) + (mappingData['co5-po6']));
+        const po7 = ((co1 * mappingData['co1-po7']) + (co2 * mappingData['co2-po7']) + (co3 * mappingData['co3-po7']) + (co4 * mappingData['co4-po7']) + (co5 * mappingData['co5-po7'])) / ((mappingData['co1-po7']) + (mappingData['co2-po7']) + (mappingData['co3-po7']) + (mappingData['co4-po7']) + (mappingData['co5-po7']));
+        const po8 = ((co1 * mappingData['co1-po8']) + (co2 * mappingData['co2-po8']) + (co3 * mappingData['co3-po8']) + (co4 * mappingData['co4-po8']) + (co5 * mappingData['co5-po8'])) / ((mappingData['co1-po8']) + (mappingData['co2-po8']) + (mappingData['co3-po8']) + (mappingData['co4-po8']) + (mappingData['co5-po8']));
+        const po9 = ((co1 * mappingData['co1-po9']) + (co2 * mappingData['co2-po9']) + (co3 * mappingData['co3-po9']) + (co4 * mappingData['co4-po9']) + (co5 * mappingData['co5-po9'])) / ((mappingData['co1-po9']) + (mappingData['co2-po9']) + (mappingData['co3-po9']) + (mappingData['co4-po9']) + (mappingData['co5-po9']));
+        const po10 = ((co1 * mappingData['co1-po10']) + (co2 * mappingData['co2-po10']) + (co3 * mappingData['co3-po10']) + (co4 * mappingData['co4-po10']) + (co5 * mappingData['co5-po10'])) / ((mappingData['co1-po10']) + (mappingData['co2-po10']) + (mappingData['co3-po10']) + (mappingData['co4-po10']) + (mappingData['co5-po10']));
+        const po11 = ((co1 * mappingData['co1-po11']) + (co2 * mappingData['co2-po11']) + (co3 * mappingData['co3-po11']) + (co4 * mappingData['co4-po11']) + (co5 * mappingData['co5-po11'])) / ((mappingData['co1-po11']) + (mappingData['co2-po11']) + (mappingData['co3-po11']) + (mappingData['co4-po11']) + (mappingData['co5-po11']));
+        const po12 = ((co1 * mappingData['co1-po12']) + (co2 * mappingData['co2-po12']) + (co3 * mappingData['co3-po12']) + (co4 * mappingData['co4-po12']) + (co5 * mappingData['co5-po12'])) / ((mappingData['co1-po12']) + (mappingData['co2-po12']) + (mappingData['co3-po12']) + (mappingData['co4-po12']) + (mappingData['co5-po12']));
+
+        const totalRowwww = [
+          "",
+          "Totals",
+          "",
+          "",
+          "",
+          isNaN(po1) ? 0 : po1,
+          isNaN(po2) ? 0 : po2,
+          isNaN(po3) ? 0 : po3,
+          isNaN(po4) ? 0 : po4,
+          isNaN(po5) ? 0 : po5,
+          isNaN(po6) ? 0 : po6,
+          isNaN(po7) ? 0 : po7,
+          isNaN(po8) ? 0 : po8,
+          isNaN(po9) ? 0 : po9,
+          isNaN(po10) ? 0 : po10,
+          isNaN(po11) ? 0 : po11,
+          isNaN(po12) ? 0 : po12
+        ]
+
+        sheetData.push(totalRowwww);
+
+        const workbook = XLSX.utils.book_new();
+        const sheet = XLSX.utils.aoa_to_sheet(sheetData);
+        const merge = {
+          s: { r: 0, c: 0 },
+          e: { r: 0, c: 41 },
+
+        };
+        const mergeTo = {
+          s: { r: 4, c: 2 },
+          e: { r: 4, c: 6 }
+        }
+        const mergeThree = {
+          s: { r: 4, c: 12 },
+          e: { r: 4, c: 16 }
+        }
+        sheet["!merges"] = [merge, mergeTo, mergeThree];
+        XLSX.utils.book_append_sheet(workbook, sheet, "Sheet1");
+        XLSX.writeFile(workbook, "output.xlsx");
+      } catch (error) {
+        console.error("Error fetching or processing data:", error);
+      }
+    }
+
+    function saveMappingData() {
+      handleFormSubmit()
+      var mappingData = {};
+      var inputs = document.getElementsByTagName('input');
+      for (var i = 0; i < inputs.length; i++) {
+        var input = inputs[i];
+        mappingData[input.id] = parseInt(input.value) || 0;
+      }
+      return mappingData;
+    }
+
+  </script>
+  <script></script>
+</head>
+
+<body class="bg-gray-200 border-solid border-2  border-black m-10 rounded">
+  <div class="container mx-auto p-8">
+    <h1 class="text-4xl mb-8 text-center font-bold text-black">
+      CO calculation
+    </h1>
+    <form id="uploadForm" onsubmit="return handleFormSubmit()" enctype="multipart/form-data">
+      <div class="mb-6">
+        <label for="fileInput" class="block text-sm font-semibold text-gray-700 mb-2">Choose Excel File:</label>
+        <input type="file" id="fileInput" name="file" class="border rounded p-3" required />
+      </div>
+
+
+      <div>
+
+        <form id="mappingForm">
+
+          <table>
+            <th colspan="18">CO- PO, PSO Mapping <br>
+              (3/2/1 indicates strength of correlation) <br> 3-Strong, 2-Medium, 1- Weak
+            </th>
+            <tr>
+              <td rowspan="2">COs</td>
+              <td colspan="12">Programme Outcomes (POs) </td>
+              <td colspan="3">PSO'S</td>
+            </tr>
+            <tr>
+              <td>PO1</td>
+              <td>PO2</td>
+              <td>PO3</td>
+              <td>PO4</td>
+              <td>PO5</td>
+              <td>PO6</td>
+              <td>PO7</td>
+              <td>PO8</td>
+              <td>PO3</td>
+              <td>PO10</td>
+              <td>PO11</td>
+              <td>PO12</td>
+              <td>PSO1</td>
+              <td>PSO2</td>
+              <td>PS03</td>
+
+            </tr>
+            <tr>
+              <td>CO1</td>
+              <td><input type="number" min="0" max="3" id="co1-po1"></td>
+              <td><input type="number" min="0" max="3" id="co1-po2"></td>
+              <td><input type="number" min="0" max="3" id="co1-po3"></td>
+              <td><input type="number" min="0" max="3" id="co1-po4"></td>
+              <td><input type="number" min="0" max="3" id="co1-po5"></td>
+              <td><input type="number" min="0" max="3" id="co1-po6"></td>
+              <td><input type="number" min="0" max="3" id="co1-po7"></td>
+              <td><input type="number" min="0" max="3" id="co1-po8"></td>
+              <td><input type="number" min="0" max="3" id="co1-po9"></td>
+              <td><input type="number" min="0" max="3" id="co1-po10"></td>
+              <td><input type="number" min="0" max="3" id="co1-po11"></td>
+              <td><input type="number" min="0" max="3" id="co1-po12"></td>
+              <td><input type="number" min="0" max="3" id="pso1-co1"></td>
+              <td><input type="number" min="0" max="3" id="pso2-co1"></td>
+              <td><input type="number" min="0" max="3" id="pso3-co1"></td>
+
+
+            </tr>
+            <tr>
+              <td>CO2</td>
+              <td><input type="number" min="0" max="3" id="co2-po1"></td>
+              <td><input type="number" min="0" max="3" id="co2-po2"></td>
+              <td><input type="number" min="0" max="3" id="co2-po3"></td>
+              <td><input type="number" min="0" max="3" id="co2-po4"></td>
+              <td><input type="number" min="0" max="3" id="co2-po5"></td>
+              <td><input type="number" min="0" max="3" id="co2-po6"></td>
+              <td><input type="number" min="0" max="3" id="co2-po7"></td>
+              <td><input type="number" min="0" max="3" id="co2-po8"></td>
+              <td><input type="number" min="0" max="3" id="co2-po9"></td>
+              <td><input type="number" min="0" max="3" id="co2-po10"></td>
+              <td><input type="number" min="0" max="3" id="co2-po11"></td>
+              <td><input type="number" min="0" max="3" id="co2-po12"></td>
+              <td><input type="number" min="0" max="3" id="pso1-co2"></td>
+              <td><input type="number" min="0" max="3" id="pso2-co2"></td>
+              <td><input type="number" min="0" max="3" id="pso3-co2"></td>
+
+            </tr>
+            <tr>
+              <td>CO3</td>
+              <td><input type="number" min="0" max="3" id="co3-po1"></td>
+              <td><input type="number" min="0" max="3" id="co3-po2"></td>
+              <td><input type="number" min="0" max="3" id="co3-po3"></td>
+              <td><input type="number" min="0" max="3" id="co3-po4"></td>
+              <td><input type="number" min="0" max="3" id="co3-po5"></td>
+              <td><input type="number" min="0" max="3" id="co3-po6"></td>
+              <td><input type="number" min="0" max="3" id="co3-po7"></td>
+              <td><input type="number" min="0" max="3" id="co3-po8"></td>
+              <td><input type="number" min="0" max="3" id="co3-po9"></td>
+              <td><input type="number" min="0" max="3" id="co3-po10"></td>
+              <td><input type="number" min="0" max="3" id="co3-po11"></td>
+              <td><input type="number" min="0" max="3" id="co3-po12"></td>
+              <td><input type="number" min="0" max="3" id="pso1-co3"></td>
+              <td><input type="number" min="0" max="3" id="pso2-co3"></td>
+              <td><input type="number" min="0" max="3" id="pso3-co3"></td>
+
+            </tr>
+            <tr>
+              <td>CO4</td>
+              <td><input type="number" min="0" max="3" id="co4-po1"></td>
+              <td><input type="number" min="0" max="3" id="co4-po2"></td>
+              <td><input type="number" min="0" max="3" id="co4-po3"></td>
+              <td><input type="number" min="0" max="3" id="co4-po4"></td>
+              <td><input type="number" min="0" max="3" id="co4-po5"></td>
+              <td><input type="number" min="0" max="3" id="co4-po6"></td>
+              <td><input type="number" min="0" max="3" id="co4-po7"></td>
+              <td><input type="number" min="0" max="3" id="co4-po8"></td>
+              <td><input type="number" min="0" max="3" id="co4-po9"></td>
+              <td><input type="number" min="0" max="3" id="co4-po10"></td>
+              <td><input type="number" min="0" max="3" id="co4-po11"></td>
+              <td><input type="number" min="0" max="3" id="co4-po12"></td>
+              <td><input type="number" min="0" max="3" id="pso1-co4"></td>
+              <td><input type="number" min="0" max="3" id="pso2-co4"></td>
+              <td><input type="number" min="0" max="3" id="pso3-co4"></td>
+
+            </tr>
+            <tr>
+              <td>CO5</td>
+              <td><input type="number" min="0" max="3" id="co5-po1"></td>
+              <td><input type="number" min="0" max="3" id="co5-po2"></td>
+              <td><input type="number" min="0" max="3" id="co5-po3"></td>
+              <td><input type="number" min="0" max="3" id="co5-po4"></td>
+              <td><input type="number" min="0" max="3" id="co5-po5"></td>
+              <td><input type="number" min="0" max="3" id="co5-po6"></td>
+              <td><input type="number" min="0" max="3" id="co5-po7"></td>
+              <td><input type="number" min="0" max="3" id="co5-po8"></td>
+              <td><input type="number" min="0" max="3" id="co5-po9"></td>
+              <td><input type="number" min="0" max="3" id="co5-po10"></td>
+              <td><input type="number" min="0" max="3" id="co5-po11"></td>
+              <td><input type="number" min="0" max="3" id="co5-po12"></td>
+              <td><input type="number" min="0" max="3" id="pso1-co5"></td>
+              <td><input type="number" min="0" max="3" id="pso2-co5"></td>
+              <td><input type="number" min="0" max="3" id="pso3-co5"></td>
+
+            </tr>
+          </table>
+          <!-- <button type="button" 
+          class="bg-blue-700 hover:bg-blue-600 text-white py-3 px-6 rounded-full transition duration-300 mb-2 mt-2"
+            
+            onclick="printMappingData()">Submit</button> -->
+        </form>
+      </div>
+      <button type="submit"
+        class="bg-blue-500 hover:bg-blue-600 mt-2 text-white py-3 px-6 rounded-full transition duration-300"
+        onclick="saveMappingData() ">
+        Upload
+      </button>
+    </form>
+    <button id="downloadButton" onclick="fetchAndProcessData()"
+      class="bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-full mt-4 transition duration-300"
+      style="display: none;">
+      Download Excel File
+    </button>
+  </div>
+</body>
+
+</html>
